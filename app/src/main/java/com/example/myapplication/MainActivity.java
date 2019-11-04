@@ -1,4 +1,5 @@
 package com.example.myapplication;
+
 import android.content.Context;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -10,7 +11,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Vibrator;
+
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 
@@ -28,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> random = new ArrayList<Integer>();
     ArrayList<String> buttonTexts = new ArrayList<String>();
 
-    int a;
-
+    Field[] fields = R.drawable.class.getFields();
+    List<Integer> drawables = new ArrayList<Integer>();
 
     ArrayList<String> arr = new ArrayList<String>();
 
@@ -37,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     Object answerOnButton;
 
     int questionNumber = 1;
-
 
     public MainActivity() {
     }
@@ -55,13 +57,25 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textView);
 
-        for (int i = 0; i < 51; i++) {
-            random.add(i);
+
+        for (Field field : fields) {
+            if (field.getName().startsWith("fl")) {
+                try {
+                    drawables.add(field.getInt(null));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
+
+        for (int i = 0; i < drawables.size(); i++) {
+            random.add(i);
+        }
         Collections.shuffle(random);
 
-        a=random.get(0);
+
+        // a=random.get(0);
         readData();
         algorithm();
 
@@ -70,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void readData() {
 
-        for (int i = 0; i < 51; i++) {
+        for (int i = 0; i <  drawables.size(); i++) {
             flags.add(getResources().getIdentifier("flag" + i, "drawable", getPackageName()));
 
         }
@@ -99,19 +113,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void algorithm() {
 
-
         for (int i = 0; i < 3; i++) {
             arr.add(buttonTexts.get(random.get(i)));
         }
-        a=random.get(0);
 
         image.setImageBitmap(null);
-        int b = flags.get(random.get(0));
-        image.setImageResource(flags.get(random.get(0)));//Imag
+        image.setImageResource(flags.get(random.get(0))); //Image
 
+        int b = flags.get(random.get(0));
         answerOnButton = arr.get(0);
 
         Collections.shuffle(arr);
+     //   Collections.shuffle(random);
 
         textView.setText("Question " + questionNumber);
         questionNumber++;
@@ -120,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         button2.setText(arr.get(1));
         button3.setText(arr.get(2));
 
+        //  random.remove(0);
 
         buttonClick();
 
