@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Vibrator;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 
@@ -28,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> random = new ArrayList<Integer>();
     ArrayList<String> buttonTexts = new ArrayList<String>();
 
-    int a;
+    Field[] fields = R.drawable.class.getFields();
+    List<Integer> drawables = new ArrayList<Integer>();
 
 
     ArrayList<String> arr = new ArrayList<String>();
@@ -55,7 +57,18 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textView);
 
-        for (int i = 0; i < 51; i++) {
+        for (Field field : fields) {
+            if (field.getName().startsWith("fl")) {
+                try {
+                    drawables.add(field.getInt(null));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        for (int i = 0; i < drawables.size(); i++) {
             random.add(i);
         }
 
@@ -69,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void readData() {
 
-        for (int i = 0; i < 51; i++) {
+        for (int i = 0; i <  drawables.size(); i++) {
             flags.add(getResources().getIdentifier("flag" + i, "drawable", getPackageName()));
 
         }
