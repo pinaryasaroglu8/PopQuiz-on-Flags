@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
         Collections.shuffle(random);
 
-        a=random.get(0);
         readData();
         algorithm();
 
@@ -103,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 3; i++) {
             arr.add(buttonTexts.get(random.get(i)));
         }
-        a=random.get(0);
 
         image.setImageBitmap(null);
         int b = flags.get(random.get(0));
@@ -120,9 +118,10 @@ public class MainActivity extends AppCompatActivity {
         button2.setText(arr.get(1));
         button3.setText(arr.get(2));
 
-
         buttonClick();
-
+        arr.clear();
+        random.remove(0);
+        Collections.shuffle(random);
 
     }
 
@@ -132,9 +131,6 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button1.getText() == answerOnButton) {
-
-                    arr.clear();
-                    random.remove(0);
                     algorithm();
                 } else {
                     Toast();
@@ -145,10 +141,7 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button2.getText() == answerOnButton) {
-                    arr.clear();
-                    random.remove(0);
                     algorithm();
-
                 } else {
                     Toast();
                 }
@@ -158,9 +151,6 @@ public class MainActivity extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button3.getText() == answerOnButton) {
-
-                    arr.clear();
-                    random.remove(0);
                     algorithm();
                 } else {
                     Toast();
