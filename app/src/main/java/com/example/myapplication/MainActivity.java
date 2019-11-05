@@ -14,8 +14,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     ImageView image;
 
@@ -25,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextView textView;
 
+    TextView highScore;
+
     ArrayList<Integer> flags = new ArrayList<Integer>();
     ArrayList<Integer> random = new ArrayList<Integer>();
     ArrayList<String> buttonTexts = new ArrayList<String>();
@@ -32,13 +33,13 @@ public class MainActivity extends AppCompatActivity {
     Field[] fields = R.drawable.class.getFields();
     List<Integer> drawables = new ArrayList<Integer>();
 
-
     ArrayList<String> arr = new ArrayList<String>();
 
     String mLine;
     Object answerOnButton;
 
     int questionNumber = 1;
+    int score=0;
 
 
     public MainActivity() {
@@ -54,8 +55,9 @@ public class MainActivity extends AppCompatActivity {
         button3 = (Button) findViewById(R.id.button3);
         image = (ImageView) findViewById(R.id.imageView2);
 
-
         textView = (TextView) findViewById(R.id.textView);
+        highScore = (TextView) findViewById(R.id.highScore);
+
 
         for (Field field : fields) {
             if (field.getName().startsWith("fl")) {
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < drawables.size(); i++) {
             random.add(i);
         }
+
 
         Collections.shuffle(random);
 
@@ -134,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         buttonClick();
         arr.clear();
         random.remove(0);
+        highScore();
         Collections.shuffle(random);
 
     }
@@ -144,8 +148,13 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button1.getText() == answerOnButton) {
+                    score++;
+                    highScore();
                     algorithm();
+
                 } else {
+                    score--;
+                    highScore();
                     Toast();
                 }
             }
@@ -154,8 +163,13 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button2.getText() == answerOnButton) {
+                    score++;
+                    highScore();
                     algorithm();
+
                 } else {
+                    score--;
+                    highScore();
                     Toast();
                 }
             }
@@ -164,8 +178,12 @@ public class MainActivity extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button3.getText() == answerOnButton) {
+                    score++;
+                    highScore();
                     algorithm();
                 } else {
+                    score--;
+                    highScore();
                     Toast();
                 }
             }
@@ -173,6 +191,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void highScore(){
+
+        highScore.setText("High Score: " + score);
+    }
 
     public void Toast() {
         final Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
