@@ -14,7 +14,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     ImageView image;
 
@@ -23,26 +23,25 @@ public class MainActivity extends AppCompatActivity  {
     Button button3;
 
     TextView textView;
-
     TextView highScore;
 
     ArrayList<Integer> flags = new ArrayList<Integer>();
     ArrayList<Integer> random = new ArrayList<Integer>();
     ArrayList<String> buttonTexts = new ArrayList<String>();
-
-    Field[] fields = R.drawable.class.getFields();
-    List<Integer> drawables = new ArrayList<Integer>();
-
     ArrayList<String> arr = new ArrayList<String>();
 
     String mLine;
-    Object answerOnButton;
+    String answerOnButton;
 
+    int scoreValue;
     int questionNumber = 1;
-    int score=0;
 
+    Field[] fields = R.drawable.class.getFields();
+    List<Integer> drawables = new ArrayList<Integer>();
+    Score score = new Score(0);
 
     public MainActivity() {
+
     }
 
     @Override
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity  {
         button2 = (Button) findViewById(R.id.button2);
         button3 = (Button) findViewById(R.id.button3);
         image = (ImageView) findViewById(R.id.imageView2);
-
         textView = (TextView) findViewById(R.id.textView);
         highScore = (TextView) findViewById(R.id.highScore);
 
@@ -69,23 +67,19 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
 
-
         for (int i = 0; i < drawables.size(); i++) {
             random.add(i);
         }
 
-
         Collections.shuffle(random);
-
         readData();
         algorithm();
-
 
     }
 
     public void readData() {
 
-        for (int i = 0; i <  drawables.size(); i++) {
+        for (int i = 0; i < drawables.size(); i++) {
             flags.add(getResources().getIdentifier("flag" + i, "drawable", getPackageName()));
 
         }
@@ -114,14 +108,13 @@ public class MainActivity extends AppCompatActivity  {
 
     public void algorithm() {
 
-
         for (int i = 0; i < 3; i++) {
             arr.add(buttonTexts.get(random.get(i)));
         }
 
-        image.setImageBitmap(null);
+
         int b = flags.get(random.get(0));
-        image.setImageResource(flags.get(random.get(0)));//Imag
+        image.setImageResource(flags.get(random.get(0))); //Imag
 
         answerOnButton = arr.get(0);
 
@@ -137,9 +130,8 @@ public class MainActivity extends AppCompatActivity  {
         buttonClick();
         arr.clear();
         random.remove(0);
-        highScore();
-        Collections.shuffle(random);
 
+        Collections.shuffle(random);
     }
 
 
@@ -148,13 +140,10 @@ public class MainActivity extends AppCompatActivity  {
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button1.getText() == answerOnButton) {
-                    score++;
-                    highScore();
+                    scoreValue = score.setScoreUp(scoreValue);
                     algorithm();
-
                 } else {
-                    score--;
-                    highScore();
+                    scoreValue = score.setScoreDown(scoreValue);
                     Toast();
                 }
             }
@@ -163,13 +152,11 @@ public class MainActivity extends AppCompatActivity  {
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button2.getText() == answerOnButton) {
-                    score++;
-                    highScore();
+                    scoreValue = score.setScoreUp(scoreValue);
                     algorithm();
 
                 } else {
-                    score--;
-                    highScore();
+                    scoreValue = score.setScoreDown(scoreValue);
                     Toast();
                 }
             }
@@ -178,33 +165,29 @@ public class MainActivity extends AppCompatActivity  {
         button3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (button3.getText() == answerOnButton) {
-                    score++;
-                    highScore();
+                    scoreValue = score.setScoreUp(scoreValue);
                     algorithm();
                 } else {
-                    score--;
-                    highScore();
+                    scoreValue = score.setScoreDown(scoreValue);
                     Toast();
                 }
             }
         });
 
+        highScore.setText("Score: " + scoreValue);
     }
 
-    public void highScore(){
-
-        highScore.setText("High Score: " + score);
-    }
 
     public void Toast() {
         final Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        //   highScore.setText("Score: " + scoreValue);
         Toast.makeText(this, "Wrong Answer", Toast.LENGTH_SHORT).show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vib.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
-            //deprecated in API 26
             vib.vibrate(500);
         }
+          buttonClick();
     }
 
 }
