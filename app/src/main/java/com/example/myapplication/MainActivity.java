@@ -10,11 +10,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Vibrator;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     ImageView image;
 
@@ -33,12 +34,13 @@ public class MainActivity extends AppCompatActivity {
     String mLine;
     String answerOnButton;
 
-    int scoreValue;
+    int scoreValue=0;
     int questionNumber = 1;
 
     Field[] fields = R.drawable.class.getFields();
     List<Integer> drawables = new ArrayList<Integer>();
     Score score = new Score(0);
+    int a;
 
     public MainActivity() {
 
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Collections.shuffle(random);
+        highScore.setText("Score: " + scoreValue );
         readData();
         algorithm();
 
@@ -89,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
             reader = new BufferedReader(new InputStreamReader(getAssets().open("Flag50.txt")));
 
             while ((mLine = reader.readLine()) != null) {
-
 
                 buttonTexts.add(mLine);
             }
@@ -112,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
             arr.add(buttonTexts.get(random.get(i)));
         }
 
-
         int b = flags.get(random.get(0));
         image.setImageResource(flags.get(random.get(0))); //Imag
 
@@ -127,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
         button2.setText(arr.get(1));
         button3.setText(arr.get(2));
 
-        buttonClick();
         arr.clear();
         random.remove(0);
 
@@ -135,59 +135,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void buttonClick() {
+    public void clickFunc(View view) {
 
-        button1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (button1.getText() == answerOnButton) {
-                    scoreValue = score.setScoreUp(scoreValue);
-                    algorithm();
-                } else {
-                    scoreValue = score.setScoreDown(scoreValue);
-                    Toast();
-                }
-            }
-        });
+        a = view.getId();
+        Button button = (Button) findViewById(a);
 
-        button2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (button2.getText() == answerOnButton) {
-                    scoreValue = score.setScoreUp(scoreValue);
-                    algorithm();
-
-                } else {
-                    scoreValue = score.setScoreDown(scoreValue);
-                    Toast();
-                }
-            }
-        });
-
-        button3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (button3.getText() == answerOnButton) {
-                    scoreValue = score.setScoreUp(scoreValue);
-                    algorithm();
-                } else {
-                    scoreValue = score.setScoreDown(scoreValue);
-                    Toast();
-                }
-            }
-        });
-
+        if (button.getText() == answerOnButton) {
+            scoreValue = score.setScoreUp(scoreValue);
+            algorithm();
+        } else {
+            scoreValue = score.setScoreDown(scoreValue);
+            Toast();
+        }
         highScore.setText("Score: " + scoreValue);
-    }
 
+    }
 
     public void Toast() {
         final Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        //   highScore.setText("Score: " + scoreValue);
         Toast.makeText(this, "Wrong Answer", Toast.LENGTH_SHORT).show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vib.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             vib.vibrate(500);
         }
-          buttonClick();
+
     }
+
 
 }
