@@ -1,5 +1,7 @@
 package com.example.myapplication;
+
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.view.View;
@@ -15,7 +17,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     ImageView image;
 
@@ -34,13 +36,15 @@ public class MainActivity extends AppCompatActivity  {
     String mLine;
     String answerOnButton;
 
-    int scoreValue=0;
+    int scoreValue = 0;
     int questionNumber = 1;
 
     Field[] fields = R.drawable.class.getFields();
     List<Integer> drawables = new ArrayList<Integer>();
     Score score = new Score(0);
     int a;
+
+    public final static String EXTRA_MESSAGE = "Score Value";
 
     public MainActivity() {
 
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity  {
         }
 
         Collections.shuffle(random);
-        highScore.setText("Score: " + scoreValue );
+        highScore.setText("Score: " + scoreValue);
         readData();
         algorithm();
 
@@ -84,7 +88,6 @@ public class MainActivity extends AppCompatActivity  {
 
         for (int i = 0; i < drawables.size(); i++) {
             flags.add(getResources().getIdentifier("flag" + i, "drawable", getPackageName()));
-
         }
 
         BufferedReader reader = null;
@@ -92,7 +95,6 @@ public class MainActivity extends AppCompatActivity  {
             reader = new BufferedReader(new InputStreamReader(getAssets().open("Flag50.txt")));
 
             while ((mLine = reader.readLine()) != null) {
-
                 buttonTexts.add(mLine);
             }
         } catch (IOException e) {
@@ -104,7 +106,6 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         }
-
     }
 
 
@@ -114,7 +115,6 @@ public class MainActivity extends AppCompatActivity  {
             arr.add(buttonTexts.get(random.get(i)));
         }
 
-        int b = flags.get(random.get(0));
         image.setImageResource(flags.get(random.get(0))); //Imag
 
         answerOnButton = arr.get(0);
@@ -130,10 +130,12 @@ public class MainActivity extends AppCompatActivity  {
 
         arr.clear();
         random.remove(0);
-
         Collections.shuffle(random);
-    }
 
+        if (random.size() == 3) {
+            sendMessage();
+        }
+    }
 
     public void clickFunc(View view) {
 
@@ -147,8 +149,13 @@ public class MainActivity extends AppCompatActivity  {
             scoreValue = score.setScoreDown(scoreValue);
             Toast();
         }
-        highScore.setText("Score: " + scoreValue);
+        highScore.setText("Score: " + score.getScoreIn());
+    }
 
+    public void sendMessage() {
+        Intent intent = new Intent(this, GameOver.class);
+        intent.putExtra("Score", score.getScoreIn());
+        startActivity(intent);
     }
 
     public void Toast() {
@@ -159,8 +166,6 @@ public class MainActivity extends AppCompatActivity  {
         } else {
             vib.vibrate(500);
         }
-
     }
-
 
 }
