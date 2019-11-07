@@ -7,6 +7,9 @@ public class Score {
     public Score(int scoreIn) {
         this.scoreIn = scoreIn;
     }
+    public int getScoreIn() {
+        return scoreIn;
+    }
 
     public int setScoreUp(int scoreIn) {
 
