@@ -8,10 +8,6 @@ public class Score {
         this.scoreIn = scoreIn;
     }
 
-    public int getScoreIn() {
-        return scoreIn;
-    }
-
     public int setScoreUp(int scoreIn) {
 
         return this.scoreIn = scoreIn + 1;
