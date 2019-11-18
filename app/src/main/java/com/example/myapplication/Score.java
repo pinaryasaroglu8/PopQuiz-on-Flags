@@ -5,7 +5,6 @@ public class Score extends AppCompatActivity {
 
     int scoreIn;
 
-
     public Score(int scoreIn) {
         this.scoreIn = scoreIn;
     }
