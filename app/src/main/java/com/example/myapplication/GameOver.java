@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,7 +10,11 @@ import android.os.Bundle;
 public class GameOver extends AppCompatActivity {
 
     TextView totalScore;
-    private Object MyActivity;
+    TextView highScoreTxt;
+
+    int highScore;
+
+    Score high ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,10 +22,23 @@ public class GameOver extends AppCompatActivity {
         setContentView(R.layout.activity_game_over);
 
         totalScore = (TextView) findViewById(R.id.totalScore);
-        Intent intent = getIntent();
-        int message = intent.getIntExtra("Score",0);
+        highScoreTxt = (TextView) findViewById(R.id.highScore);
 
-        totalScore.setText("Score Value: " + message);
+        Intent intent = getIntent();
+
+        int score = intent.getIntExtra("Score",0);
+        totalScore.setText("Score Value: " + score);
+
+        SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+        highScore = prefs.getInt("score", 0);
+
+        if (highScore > score) {
+            highScoreTxt.setText("High Score: " + highScore);
+        } else {
+            highScore = score;
+            highScoreTxt.setText("High Score: "+ highScore);
+            prefs.edit().putInt("score", highScore).apply();
+        }
 
     }
 }
