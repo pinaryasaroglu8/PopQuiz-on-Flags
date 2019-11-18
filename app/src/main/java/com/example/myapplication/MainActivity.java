@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
+
 public class MainActivity extends AppCompatActivity {
 
     ImageView image;
@@ -26,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
     Button button3;
 
     TextView textView;
-    TextView highScore;
+    TextView timer;
+    TextView scoreTextView;
 
     ArrayList<Integer> flags = new ArrayList<Integer>();
     ArrayList<Integer> random = new ArrayList<Integer>();
@@ -42,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     Field[] fields = R.drawable.class.getFields();
     List<Integer> drawables = new ArrayList<Integer>();
     Score score = new Score(0);
-    int a;
+    int getButtonId;
+    String temp;
 
     public final static String EXTRA_MESSAGE = "Score Value";
 
@@ -60,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
         button3 = (Button) findViewById(R.id.button3);
         image = (ImageView) findViewById(R.id.imageView2);
         textView = (TextView) findViewById(R.id.textView);
-        highScore = (TextView) findViewById(R.id.highScore);
+        timer = (TextView) findViewById(R.id.timer);
+        scoreTextView = (TextView) findViewById(R.id.highScore);
 
 
         for (Field field : fields) {
@@ -78,9 +83,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Collections.shuffle(random);
-        highScore.setText("Score: " + scoreValue);
+        scoreTextView.setText("Score: " + scoreValue);
         readData();
-        algorithm();
+        try {
+            algorithm();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -108,8 +117,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public void algorithm() {
+    public void algorithm() throws IOException {
 
         for (int i = 0; i < 3; i++) {
             arr.add(buttonTexts.get(random.get(i)));
@@ -119,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         answerOnButton = arr.get(0);
 
-        Collections.shuffle(arr);
+        // Collections.shuffle(arr);
 
         textView.setText("Question " + questionNumber);
         questionNumber++;
@@ -134,13 +142,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (random.size() == 3) {
             sendMessage();
+
         }
     }
 
-    public void clickFunc(View view) {
+    public void clickFunc(View view) throws IOException {
 
-        a = view.getId();
-        Button button = (Button) findViewById(a);
+        getButtonId = view.getId();
+        Button button = (Button) findViewById(getButtonId);
 
         if (button.getText() == answerOnButton) {
             scoreValue = score.setScoreUp(scoreValue);
@@ -149,7 +158,8 @@ public class MainActivity extends AppCompatActivity {
             scoreValue = score.setScoreDown(scoreValue);
             Toast();
         }
-        highScore.setText("Score: " + score.getScoreIn());
+        scoreTextView.setText("Score: " + score.getScoreIn());
+
     }
 
     public void sendMessage() {
@@ -157,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("Score", score.getScoreIn());
         startActivity(intent);
     }
+
 
     public void Toast() {
         final Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -169,3 +180,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+
+
+
+

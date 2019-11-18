@@ -1,13 +1,17 @@
 package com.example.myapplication;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class Score {
+public class Score extends AppCompatActivity {
 
     int scoreIn;
+
 
     public Score(int scoreIn) {
         this.scoreIn = scoreIn;
     }
+
     public int getScoreIn() {
+
         return scoreIn;
     }
 
@@ -20,5 +24,6 @@ public class Score {
 
         return this.scoreIn = scoreIn - 1;
     }
+
 
 }
