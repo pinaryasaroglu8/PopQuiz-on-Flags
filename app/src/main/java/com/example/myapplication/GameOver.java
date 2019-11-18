@@ -14,23 +14,24 @@ public class GameOver extends AppCompatActivity {
 
     int highScore;
 
-    Score high ;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_over);
 
-        totalScore = (TextView) findViewById(R.id.totalScore);
-        highScoreTxt = (TextView) findViewById(R.id.highScore);
+        totalScore = findViewById(R.id.totalScore);
+        highScoreTxt = findViewById(R.id.highScore);
 
         Intent intent = getIntent();
 
         int score = intent.getIntExtra("Score",0);
         totalScore.setText("Score Value: " + score);
 
+
         SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+
         highScore = prefs.getInt("score", 0);
+      //  highScore=0;
 
         if (highScore > score) {
             highScoreTxt.setText("High Score: " + highScore);
@@ -39,6 +40,7 @@ public class GameOver extends AppCompatActivity {
             highScoreTxt.setText("High Score: "+ highScore);
             prefs.edit().putInt("score", highScore).apply();
         }
+
 
     }
 }

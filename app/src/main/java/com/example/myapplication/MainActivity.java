@@ -3,16 +3,15 @@ package com.example.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.os.VibrationEffect;
+import android.os.*;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.os.Vibrator;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -41,14 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
     int scoreValue = 0;
     int questionNumber = 1;
+    int getButtonId;
 
     Field[] fields = R.drawable.class.getFields();
     List<Integer> drawables = new ArrayList<Integer>();
     Score score = new Score(0);
-    int getButtonId;
-    String temp;
 
-    public final static String EXTRA_MESSAGE = "Score Value";
 
     public MainActivity() {
 
@@ -59,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button1 = (Button) findViewById(R.id.button1);
-        button2 = (Button) findViewById(R.id.button2);
-        button3 = (Button) findViewById(R.id.button3);
-        image = (ImageView) findViewById(R.id.imageView2);
-        textView = (TextView) findViewById(R.id.textView);
-        timer = (TextView) findViewById(R.id.timer);
-        scoreTextView = (TextView) findViewById(R.id.highScore);
+        button1 = findViewById(R.id.button1);
+        button3 = findViewById(R.id.button3);
+        button2 = findViewById(R.id.button2);
+        image = findViewById(R.id.imageView2);
+        textView = findViewById(R.id.textView);
+        timer = findViewById(R.id.timer);
+        scoreTextView = findViewById(R.id.highScore);
 
 
         for (Field field : fields) {
@@ -123,11 +120,11 @@ public class MainActivity extends AppCompatActivity {
             arr.add(buttonTexts.get(random.get(i)));
         }
 
-        image.setImageResource(flags.get(random.get(0))); //Imag
+        image.setImageResource(flags.get(random.get(0))); //Image
 
         answerOnButton = arr.get(0);
 
-        // Collections.shuffle(arr);
+        Collections.shuffle(arr);
 
         textView.setText("Question " + questionNumber);
         questionNumber++;
@@ -153,9 +150,26 @@ public class MainActivity extends AppCompatActivity {
 
         if (button.getText() == answerOnButton) {
             scoreValue = score.setScoreUp(scoreValue);
-            algorithm();
+            Animation animShake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.zoomin);
+            image.startAnimation(animShake);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    try {
+                        algorithm();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 1450);
+
+
         } else {
             scoreValue = score.setScoreDown(scoreValue);
+            Animation animShake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+            view.startAnimation(animShake);
+
             Toast();
         }
         scoreTextView.setText("Score: " + score.getScoreIn());
