@@ -27,7 +27,6 @@ public class GameOver extends AppCompatActivity {
         int score = intent.getIntExtra("Score",0);
         totalScore.setText("Score Value: " + score);
 
-
         SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
 
         highScore = prefs.getInt("score", 0);
@@ -40,7 +39,5 @@ public class GameOver extends AppCompatActivity {
             highScoreTxt.setText("High Score: "+ highScore);
             prefs.edit().putInt("score", highScore).apply();
         }
-
-
     }
 }
