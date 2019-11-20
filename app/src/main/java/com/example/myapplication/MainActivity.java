@@ -16,7 +16,6 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-
 public class MainActivity extends AppCompatActivity {
 
     ImageView image;
@@ -45,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
     List<Integer> drawables = new ArrayList<Integer>();
     Score score = new Score(0);
 
+    private long startTime = 0L;
+    private Handler customHandler = new Handler();
+
+    long timeInMilliseconds = 0L;
+    long timeSwapBuff = 0L;
+    long updatedTime = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +65,12 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.textView);
 
         timer = findViewById(R.id.timer);
-       
+
         scoreTextView = findViewById(R.id.highScore);
+
+        startTime = SystemClock.uptimeMillis();
+        customHandler.postDelayed(updateTimerThread, 0);
+       // timerClass.startTimer();
 
         for (Field field : fields) {
             if (field.getName().startsWith("fl")) {
@@ -86,6 +95,21 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    private Runnable updateTimerThread = new Runnable() {
+
+        public void run() {
+
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+            updatedTime = timeSwapBuff + timeInMilliseconds;
+
+            int secs = (int) (updatedTime / 1000);
+            int mins = secs / 60;
+            secs = secs % 60;
+
+            timer.setText("" + mins + ":"+ String.format("%02d", secs));
+            customHandler.postDelayed(this, 0);
+        }
+    };
 
     public void readData() {
 
@@ -113,13 +137,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void algorithm() throws IOException {
 
-
         textView.setText("Question " + questionNumber);
         questionNumber++;
 
-        /*    ListIterator<Integer> li = random.listIterator();
-        Integer item = li.next();
-        */
         for (int i = 0; i < 3; i++) {
             arr.add(buttonTexts.get(random.get(i)));
         }
@@ -143,7 +163,9 @@ public class MainActivity extends AppCompatActivity {
 
         getButtonId = view.getId();
         Button button = findViewById(getButtonId);
+
         Handler handler = new Handler();
+
         final Animation animShake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.zoomin);
         final Animation animZoomIn = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
 
@@ -200,8 +222,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
-
-
-
-
