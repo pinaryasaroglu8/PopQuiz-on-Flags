@@ -50,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
     long timeInMilliseconds = 0L;
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
+    int secs;
+    int mins;
+    int flag = 0;
+    int numberOfFlags;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +74,10 @@ public class MainActivity extends AppCompatActivity {
 
         scoreTextView = findViewById(R.id.highScore);
 
-        startTime = SystemClock.uptimeMillis();
-        customHandler.postDelayed(updateTimerThread, 0);
-       // timerClass.startTimer();
+        Intent intent = getIntent();
+        numberOfFlags = intent.getIntExtra("NumberOfFlags", 0);
+        textView.setText("Question " + questionNumber + "/" + numberOfFlags);
+
 
         for (Field field : fields) {
             if (field.getName().startsWith("fl")) {
@@ -81,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
         for (int i = 0; i < drawables.size(); i++) {
             random.add(i);
         }
@@ -95,21 +101,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private Runnable updateTimerThread = new Runnable() {
-
-        public void run() {
-
-            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
-            updatedTime = timeSwapBuff + timeInMilliseconds;
-
-            int secs = (int) (updatedTime / 1000);
-            int mins = secs / 60;
-            secs = secs % 60;
-
-            timer.setText("" + mins + ":"+ String.format("%02d", secs));
-            customHandler.postDelayed(this, 0);
-        }
-    };
 
     public void readData() {
 
@@ -137,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void algorithm() throws IOException {
 
-        textView.setText("Question " + questionNumber);
+        textView.setText("Question " + questionNumber + "/" + numberOfFlags);
         questionNumber++;
 
         for (int i = 0; i < 3; i++) {
@@ -164,6 +155,13 @@ public class MainActivity extends AppCompatActivity {
         getButtonId = view.getId();
         Button button = findViewById(getButtonId);
 
+
+        while (flag == 0) {
+            startTime = SystemClock.uptimeMillis();
+            customHandler.postDelayed(updateTimerThread, 0);
+            flag++;
+        }
+
         Handler handler = new Handler();
 
         final Animation animShake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.zoomin);
@@ -172,10 +170,12 @@ public class MainActivity extends AppCompatActivity {
         if (button.getText() == answerOnButton) {
             scoreValue = score.setScoreUp(scoreValue);
 
-            if (random.size() == 2) {
+            if (random.size() == flags.size()-numberOfFlags) {
 
                 image.startAnimation(animShake);
 
+                timeSwapBuff += timeInMilliseconds;
+                customHandler.removeCallbacks(updateTimerThread);
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         sendMessage();
@@ -202,14 +202,45 @@ public class MainActivity extends AppCompatActivity {
             view.startAnimation(animZoomIn);
             Toast();
         }
-        scoreTextView.setText("Score: " + score.getScoreIn());
+        scoreTextView.setText("Score: " + scoreValue);
+    }
+
+    private Runnable updateTimerThread = new Runnable() {
+
+        public void run() {
+
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+            updatedTime = timeSwapBuff + timeInMilliseconds;
+
+            secs = (int) (updatedTime / 1000);
+            mins = secs / 60;
+            secs = secs % 60;
+
+            timer.setText("" + mins + ":" + String.format("%02d", secs));
+            customHandler.postDelayed(this, 0);
+        }
+    };
+
+    public String getTime() {
+
+
+        timeSwapBuff += timeInMilliseconds;
+        customHandler.removeCallbacks(updateTimerThread);
+        return "" + mins + ":" + String.format("%02d", secs);
     }
 
     public void sendMessage() {
+
         Intent intent = new Intent(this, GameOver.class);
-        intent.putExtra("Score", score.getScoreIn());
+        intent.putExtra("Score", scoreValue);
+        startActivity(intent);
+
+        Intent intent2 = new Intent(this, GameOver.class);
+        intent2.putExtra("Time", getTime());
+       //
         startActivity(intent);
     }
+
 
     public void Toast() {
         final Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
