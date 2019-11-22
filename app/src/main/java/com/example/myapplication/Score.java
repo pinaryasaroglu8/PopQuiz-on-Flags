@@ -24,5 +24,4 @@ public class Score extends AppCompatActivity {
         return this.scoreIn = scoreIn - 1;
     }
 
-
 }

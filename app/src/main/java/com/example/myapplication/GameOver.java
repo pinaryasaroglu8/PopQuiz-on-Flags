@@ -23,20 +23,23 @@ public class GameOver extends AppCompatActivity {
         highScoreTxt = findViewById(R.id.highScore);
 
         Intent intent = getIntent();
+        Intent intent2 = getIntent();
 
         int score = intent.getIntExtra("Score",0);
+        String time = intent2.getStringExtra("Time");
+
         totalScore.setText("Score Value: " + score);
 
         SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
 
         highScore = prefs.getInt("score", 0);
-      //  highScore=0;
+        //  highScore=0;
 
         if (highScore > score) {
-            highScoreTxt.setText("High Score: " + highScore);
+            highScoreTxt.setText("High Score: " + highScore  );//" Time: " + time
         } else {
             highScore = score;
-            highScoreTxt.setText("High Score: "+ highScore);
+            highScoreTxt.setText("High Score: "+ highScore   );
             prefs.edit().putInt("score", highScore).apply();
         }
     }

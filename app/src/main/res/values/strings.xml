@@ -3,4 +3,7 @@
     <string name="button">Button</string>
     <string name="todo">TODO</string>
     <string name="timerVal">00:00</string>
+    <string name="flagNumber">Choose the Total Number of Flags</string>
+    <string name="OK">OK</string>
+
 </resources>
