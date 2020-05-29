@@ -17,7 +17,8 @@ public class FirstActivity extends AppCompatActivity {
     Button okButton;
 
     int number;
-   int prog;
+    int prog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +38,8 @@ public class FirstActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                numberOfFlagsTxt.setText( "Number of flags:" + progress + "/" + seekBar.getMax());
-                prog=progress;
+                numberOfFlagsTxt.setText("Number of flags:" + progress + "/" + seekBar.getMax());
+                prog = progress;
 
 
             }
@@ -50,21 +51,18 @@ public class FirstActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                number=prog;
+                number = prog;
 
             }
         });
 
 
-
-
         okButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
 
-                if(number== 0){
+                if (number == 0) {
                     Toast.makeText(getApplicationContext(), "Number of flags must be higher than 0", Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     intent.putExtra("NumberOfFlags", number);
                     startActivity(intent);
                 }

@@ -26,7 +26,7 @@ public class GameOver extends AppCompatActivity {
         Intent intent2 = getIntent();
 
         int score = intent.getIntExtra("Score",0);
-        String time = intent2.getStringExtra("Time");
+        String time = intent.getStringExtra("Time");
 
         totalScore.setText("Score Value: " + score);
 
