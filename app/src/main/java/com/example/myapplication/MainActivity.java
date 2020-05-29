@@ -53,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
     int secs;
     int mins;
     int flag = 0;
-    int numberOfFlags;
-
+    int numberOfFlags = 51;
 
 
     @Override
@@ -74,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
         scoreTextView = findViewById(R.id.highScore);
 
-        Intent intent = getIntent();
-        numberOfFlags = intent.getIntExtra("NumberOfFlags", 0);
+        //  Intent intent = getIntent();
+        //  numberOfFlags = intent.getIntExtra("NumberOfFlags", 0);
         textView.setText("Question " + questionNumber + "/" + numberOfFlags);
 
 
@@ -170,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         if (button.getText() == answerOnButton) {
             scoreValue = score.setScoreUp(scoreValue);
 
-            if (random.size() == flags.size()-numberOfFlags) {
+            if (random.size() == flags.size() - numberOfFlags) {
 
                 image.startAnimation(animShake);
 
@@ -237,8 +236,9 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent2 = new Intent(this, GameOver.class);
         intent2.putExtra("Time", getTime());
-       //
+        //
         startActivity(intent);
+
     }
 
 
